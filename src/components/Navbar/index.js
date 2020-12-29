@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { styles, DrawerButton, NavLogo, SignIn } from './Navbar.style'
 import { Link } from "react-router-dom";
 import MenuIcon from '@material-ui/icons/Menu';
@@ -6,6 +6,8 @@ import logo from '../../assets/amazonLg.png'//*
 import SearchIcon from '@material-ui/icons/Search';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { Drawer, IconButton, Container, Grid, TextField, Hidden } from '@material-ui/core';
+import { Context } from '../../router/Router'
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 function Navbar() {
   const classes = styles();
@@ -16,39 +18,59 @@ function Navbar() {
     setOpen(true)
   }
 
+
+
   function NavbarRight() {
+    const consumer = useContext(Context)
+
+
+    const handleAuthentication = () => {
+      if (consumer?.currentUser) {
+        consumer?.setCurrentUser(null)
+        localStorage.removeItem("token")
+      }
+    };
+    //  <LinearProgress style={{ marginTop: 20 }} /> || 
+
     return (
       <>
-        <Grid item xs={5}>
-          <SignIn>
-            <Link to="/login">
-              Login
-            </Link>
-          </SignIn>
+        <Grid item xs={5} >
 
-          <SignIn>
-          <Link to="/register">
-          &Account
+    
+
+            <Link style={{ color: 'white' }} to={!consumer?.currentUser && "/login"}>
+              <SignIn onClick={handleAuthentication}>
+
+                <SignIn > 
+                  {consumer?.currentUser ? consumer?.currentUser?.userEmail :  "Hello Guess"  }
+                </SignIn>
+
+                <SignIn>
+                 <b>{consumer?.currentUser ? "Sign Out" : "Sign In"}</b>
+                </SignIn>
+
+              </SignIn>
             </Link>
-            </SignIn>
+         
+
         </Grid>
 
         <Grid item xs={4}>
           <SignIn>Returns</SignIn>
-          <SignIn>&Orders</SignIn>
+          <b><SignIn>&Orders</SignIn></b>
         </Grid>
 
         <Grid item xs={3}>
 
-        <Link to="/checkout">
-        <ShoppingCartIcon />
-            </Link>
-        
-          <SignIn> 0 </SignIn>
+          <Link to="/checkout">
+            <ShoppingCartIcon />
+          </Link>
+
+          <SignIn>{consumer?.checkout?.length}  </SignIn>
         </Grid>
       </>
     );
-  }
+  }//{consumer?.checkout?.length}
 
   return (
     <Container maxWidth={'xl'} className={classes.root}>

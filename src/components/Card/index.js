@@ -11,6 +11,8 @@ import { styles, Price, } from './Card.style.js'
 import { Grid } from '@material-ui/core';
 import { Context } from '../../router/Router';
 import { useHistory } from "react-router-dom";
+// import { postData } from '../../helper/postData'
+
 
 export function MediaCard({ productImage, productTitle, productPrice, productCategory, productId }) {
   // Button'a onClik with history
@@ -19,6 +21,20 @@ export function MediaCard({ productImage, productTitle, productPrice, productCat
   const consumer = useContext(Context);
   let history = useHistory();
   const classes = styles();
+
+
+  // const AddProduct = () => {
+  //   postData(`/api/user/addProduct/${productId}`)
+  //     .then(() => {
+
+  //       consumer.setAdded(true)
+  //     }
+  //     )
+
+
+  // }
+
+
   return (
     <Card className={classes.root}>
 
@@ -47,6 +63,8 @@ export function MediaCard({ productImage, productTitle, productPrice, productCat
 
         <Grid container direction='row' justify='space-between' >
           <Button className={classes.button}
+            onClick={() => consumer.addToBasket(consumer?.productData?._id)}
+
             size="small"
             type="Submit"
             variant="contained" >

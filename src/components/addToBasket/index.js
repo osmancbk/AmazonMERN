@@ -20,3 +20,6 @@ function AddToBasket(props) {
 
 export default AddToBasket
 
+
+
+// onClick={() => consumer.addToBasket(consumer?.productData?._id)}

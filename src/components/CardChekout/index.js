@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -14,17 +14,21 @@ import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 // import {privateFetchData} from "../../helper/FetchData";
+import { Context } from '../../router/Router';
+import { useHistory } from "react-router-dom";
 import axios from "axios"
 
 
 
-
 export function MediaCard({ productId,productImage, productTitle, productPrice, productDescription,setDeleted }) {
+  const consumer = useContext(Context);
+  let history = useHistory();
+
   // Button'a onClik with history
   const [snackPack, setSnackPack] = useState([]);
   const [open, setOpen] = useState(false);
   const [messageInfo, setMessageInfo] = useState(undefined);
-  
+
   useEffect(() => {
     if (snackPack.length && !messageInfo) {
       // Set a new snack when we don't have an active one
@@ -37,9 +41,9 @@ export function MediaCard({ productId,productImage, productTitle, productPrice, 
     }
   }, [snackPack, messageInfo, open]);
 
-  const handleClick = (message) => () => {
-    setSnackPack((prev) => [...prev, { message, key: new Date().getTime() }]);
-  };
+  // const handleClick = (message) => () => {
+  //   setSnackPack((prev) => [...prev, { message, key: new Date().getTime() }]);
+  // };
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -64,13 +68,18 @@ export function MediaCard({ productId,productImage, productTitle, productPrice, 
   const deleteProduct = () =>{
             postData(`/api/user/deleteProduct/${productId}`)
                   .then(()=>
-                   { handleClick('Product Deleted')
+                   { consumer.setsnackBarMessage("Product Deleted"); //*
+                   consumer.snackBarHandleClick()
                     setDeleted(true)}
      )
-                  
+    
                   
   }
-  
+
+  const getDetails =  () => {
+    consumer.setCurrentProductId(productId)
+    history.push('/details')
+  }
 
   const classes = styles();
   return (
@@ -100,9 +109,9 @@ export function MediaCard({ productId,productImage, productTitle, productPrice, 
 
 
       <CardActions className={classes.actions}>
-
+      {/*  */}
         <Typography variant="h6" color="textSecondary" component="h6">
-          {`${productPrice} $`}
+          {`${Math.round((productPrice*100)/100)} $`}
         </Typography>
 
         <Grid container direction='row' justify='space-between' >
@@ -115,7 +124,8 @@ export function MediaCard({ productId,productImage, productTitle, productPrice, 
             Delete 
          </Button>
           <Button className={classes.button}
-            
+            onClick={getDetails}
+
             size="small"
             type="Submit"
             variant="contained" >

@@ -23,10 +23,7 @@ export const styles = makeStyles(() => ({
         backgroundColor: 'rgb(254,189,105)',
 
     },
-
-
-
-
+ 
 
 
 }));
@@ -46,5 +43,5 @@ width: 100px;
 
 export const SignIn = styled.div`
 font-size: 14px;
-    
+
 `

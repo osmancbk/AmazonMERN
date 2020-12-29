@@ -4,6 +4,7 @@ import { MediaCard } from '../../components/Card'; //*
 // import { fetchData } from '../../helper/FetchData'
 import { Container, Grid,Typography } from '@material-ui/core';
 import { styles, Box } from './CardList.style'
+import SnackBar from '../../components/snackBar';
 
 // category: "men clothing"
 // description: "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday"
@@ -21,6 +22,7 @@ export function CardList() {
     //maxWidth="sm"  maxWidth={'xl'}
     return (
         <Container className={classes.root}  maxWidth={'xl'}> 
+        <SnackBar />
             <Grid container className={classes.grid}>
                 <Grid item xs={12} >
                     <Box>   indirim kuponundan yararlanmak için kupon kısmına CODE47 yazınız.</Box>
