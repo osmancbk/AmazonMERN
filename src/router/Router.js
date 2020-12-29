@@ -19,12 +19,67 @@ function AppRouter() {
     const [currentProductId, setCurrentProductId] = useState();
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const [snackBarMessage, setsnackBarMessage] = useState();
-    //
     const [checkout, setCheckout] = useState()
     const [total, setTotal] = useState()
     const [deleted, setDeleted] = useState()
     const [currentUser, setCurrentUser] = useState()
 
+    const getCheckout=()=>{
+        console.log('chekout', checkout?.length)
+        let totalPrice = 0
+        privateFetchData("/api/user/checkout")
+        .then(res => {
+            // consumer.setLenght(res.length)
+            setCheckout(res)
+            setDeleted(false)
+        })
+        .then(() => {
+            checkout?.map(r => totalPrice += r.price)
+            setTotal(totalPrice)
+            // setLenght(checkout.lenght) 
+        })
+        .catch(err => console.log(err))
+        console.log("++++++", total)
+        // console.log("uzunluk", consumer.length)
+    }
+    
+    const addToBasket = (id) => {
+        postData(`api/user/addProduct/${id}`, id)
+        .then((res) => {
+            console.log("added to Basket", res);
+            // console.log('aaa', res?.checkoutList.length)
+            setCheckout(res?.checkoutList); //*
+            setsnackBarMessage("Added to Basket");
+            snackBarHandleClick();
+            getCheckout();
+        })
+        .catch((err) => {
+            setsnackBarMessage("You have to login", err);
+            snackBarHandleClick();
+        })
+    }
+    
+    const getDetails = (id) => {
+        fetchData(`api/product/detail/${id}`)
+        .then((res) => {
+            console.log("Details", res);//*
+            setProductData(res?.data?.product);
+        })
+        .catch((err) => {
+            console.log("can not find Product Details", err)
+        })
+    }
+    
+    const snackBarHandleClick = () => {
+        setSnackBarOpen(true);
+    };
+    
+    const snackBarHandleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackBarOpen(false);
+    };
 
     useEffect(() => {
         privateFetchData(`api/user/profile`)
@@ -33,53 +88,13 @@ function AppRouter() {
         // console.log('currentUser', currentUser)
 
     }, [])
-
-
-
-    const addToBasket = (id) => {
-        postData(`api/user/addProduct/${id}`, id)
-            .then((res) => {
-                console.log("added to Basket", res);
-                // console.log('aaa', res?.checkoutList.length)
-                setCheckout(res?.checkoutList); //*
-                setsnackBarMessage("Added to Basket");
-                snackBarHandleClick();
-
-            })
-            .catch((err) => {
-                setsnackBarMessage("can not added to Basket", err);
-                snackBarHandleClick();
-            })
-    }
-
-    const getDetails = (id) => {
-        fetchData(`api/product/detail/${id}`)
-            .then((res) => {
-                console.log("Details", res);//*
-                setProductData(res?.data?.product);
-            })
-            .catch((err) => {
-                console.log("can not find Product Details", err)
-            })
-    }
-
-    const snackBarHandleClick = () => {
-        setSnackBarOpen(true);
-    };
-
-    const snackBarHandleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setSnackBarOpen(false);
-    };
-
-
+    
     return (//length, setLenght,
         <Context.Provider value={{
             productData, setProductData, similarProductsData, setsimilarProductsData,
             addToBasket, getDetails, currentProductId, setCurrentProductId, snackBarOpen, setSnackBarOpen, snackBarHandleClick,
-            snackBarHandleClose, snackBarMessage, setsnackBarMessage, deleted, setDeleted, total, setTotal, checkout, setCheckout, currentUser, setCurrentUser
+            snackBarHandleClose, snackBarMessage, setsnackBarMessage, deleted, setDeleted, total, setTotal, checkout, setCheckout, 
+            currentUser, setCurrentUser,getCheckout
         }}>
             <Router>
                 <Navbar />

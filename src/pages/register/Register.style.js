@@ -4,7 +4,6 @@ import styled from "styled-components";
 export const styles = makeStyles({
     wrapper: {
         marginTop: "1rem",
-        
     },
     registerContainer:{
          border:"1px solid #e0e0e0",
@@ -33,7 +32,7 @@ export const styles = makeStyles({
 export const Image = styled.img`
     width:10rem;
     height:auto;
-    margin:auto;
+    margin-left:7rem;
     padding-bottom:1rem; 
 ` 
 

@@ -32,7 +32,7 @@ export default function CustomizedTables({similarProductsData, productNumber, r1
               <StyledTableCell align="left"><Rating name="half-rating-read" precision={0.5} value={r1} readOnly /></StyledTableCell>
             </StyledTableRow>
             <StyledTableRow >
-              <StyledTableCell className={tableStyles.price} align="left"><b>€{r2}</b></StyledTableCell>
+              <StyledTableCell className={tableStyles.price} align="left"><b>${r2}</b></StyledTableCell>
             </StyledTableRow>
             <StyledTableRow>
               <StyledTableCell className={tableStyles.shipping} align="left"><b>{r3a}</b><a href="#">{r3b}</a></StyledTableCell>

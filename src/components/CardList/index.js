@@ -33,6 +33,7 @@ export function CardList() {
             <Grid container spacing={6}>
                 {productList?.map((products) => {
                     return (
+                        // <Grid item lg={3} md={4} sm={6} xs={12} key={products.id}>
                         <Grid item lg={3} md={4} sm={6} xs={12} key={products.id}>
                             <MediaCard
                                 productPrice={products.price}

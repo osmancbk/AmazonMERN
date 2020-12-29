@@ -9,7 +9,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { Context } from '../../router/Router'
 import SnackBar from '../../components/snackBar';
 import axios from "axios";
-
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,30 +30,9 @@ function Checkout() {
 
   const classes = styles();
   const style = useStyles()
-
-
-
+  
   useEffect(() => {
-    console.log('chekout', consumer?.checkout?.length)
-    let totalPrice = 0
-    privateFetchData("/api/user/checkout")
-      .then(res => {
-        // consumer.setLenght(res.length)
-        consumer.setCheckout(res)
-        consumer.setDeleted(false)//*
-      })
-      .then(() => {
-        consumer.checkout.map(r => totalPrice += r.price)
-        consumer.setTotal(totalPrice)
-        // setLenght(checkout.lenght) 
-
-      }
-
-      )
-      .catch(err => console.log(err))
-    console.log("++++++", consumer.total)
-    console.log("uzunluk", consumer.length)
-
+    consumer.getCheckout();
   }
     , [consumer.deleted]) //*
 
@@ -68,27 +47,27 @@ function Checkout() {
   };
 
   console.log(">>>>", consumer.checkout)
-
-
-
   return (
-
     <Container maxWidth={'xl'}>
       <SnackBar />
       <Grid container spacing={6} className={classes.wrapper} >
         <Typography variant="h3" >
-          Checkout List Total: {consumer.total}$
+          {consumer.currentUser ? `Checkout List Total: $${ Math.round((consumer.total*100)/100)}`
+           :  <Grid item className={classes.checkoutWarning}>
+                <Alert variant="outlined" severity="warning" className={classes.alert}>
+                  <b>You have to sign in!</b>
+                </Alert> 
+              </Grid>}
+              {/* // <Grid item className={classes.checkoutWarning}>
+              //   You have to sign in
+              // </Grid> */}
+             
          </Typography>
-
         {
-
           consumer.checkout ? consumer.checkout.map((products, index) => {
-
             //key={products.id} aynı ürün silinme problemi //Aynı üründen kaç adet old. göster.
             return (
               <Grid item xs={12} key={index}>
-
-
                 <MediaCard
                   productId={products._id}
                   productPrice={products.price}
@@ -101,15 +80,11 @@ function Checkout() {
               </Grid>
             )
           }) :
-
             <LinearProgress style={{ marginTop: 20 }} />
-
         }
       </Grid>
-
     </Container>
   )
 }
-
 export default Checkout
 

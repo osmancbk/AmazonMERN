@@ -63,7 +63,7 @@ export function MediaCard({ productImage, productTitle, productPrice, productCat
 
         <Grid container direction='row' justify='space-between' >
           <Button className={classes.button}
-            onClick={() => consumer.addToBasket(consumer?.productData?._id)}
+            onClick={() => consumer.addToBasket(productId)}
 
             size="small"
             type="Submit"

@@ -68,10 +68,10 @@ function Details() {
                             <DetailHeader>You Save:</DetailHeader>
                         </Grid>
                         <Grid>
-                            <CancelledPrice>€{Math.round((consumer?.productData?.price * 1.3) * 100) / 100}</CancelledPrice>
-                            <DetailP><Typography variant="h6" style={{ color: "#C45500" }}><b> € {consumer?.productData?.price}</b></Typography>
+                            <CancelledPrice>${Math.round((consumer?.productData?.price * 1.3) * 100) / 100}</CancelledPrice>
+                            <DetailP><Typography variant="h6" style={{ color: "#C45500" }}><b> $ {consumer?.productData?.price}</b></Typography>
                              FREE Delivery.<Link href="#">Details</Link> </DetailP>
-                            <DetailP>€{Math.round((consumer?.productData?.price * .3) * 100) / 100}</DetailP>
+                            <DetailP>${Math.round((consumer?.productData?.price * .3) * 100) / 100}</DetailP>
                         </Grid>
                     </Grid>
                     <h4>About this item</h4>
@@ -86,7 +86,7 @@ function Details() {
                     <OffscreenCanvas></OffscreenCanvas>
                     <OffscreenCanvasRenderingContext2D></OffscreenCanvasRenderingContext2D> */}
 
-                    <Typography variant="h6" align="left" style={{ color: "#C45500", marginLeft: "1rem" }}><b>€{consumer?.productData?.price}</b></Typography>
+                    <Typography variant="h6" align="left" style={{ color: "#C45500", marginLeft: "1rem" }}><b>${consumer?.productData?.price}</b></Typography>
                     <DetailP><b>FREE Delivery.</b><Link href="#"> Delivery Details</Link></DetailP>
                     <DetailP>Arrives: Tuesday,<b>Dec 29</b> <Link href="#"> Details</Link></DetailP>
                     <DetailP>Fastest delivery: Thursday,<b> Dec 31</b><Link href="#"> Details</Link></DetailP>
