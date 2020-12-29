@@ -21,6 +21,7 @@ function Login() {
                 consumer.setCurrentUser(values);
                 localStorage.setItem("token", data.token);
                 console.log("token", data.token);
+                consumer.getCheckout();
                 // setLoggedIn(true);
                 history.push("/");
             })

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 export const styles = makeStyles(() => ({ 
     wrapper: {
-        
         marginTop: 20,
         marginLeft:10,
         width:"100%",
@@ -11,11 +10,16 @@ export const styles = makeStyles(() => ({
         flexDirection:"column",
         // justifyContent:"center",
         // alignItems:"center"
-        
-        
-    
-        
-
+    },
+    checkoutWarning:{
+        height:"20rem",
+        // display:"flex",
+        // justifyItems:"center",
+        // alignContent:"center"
+    },
+    alert:{
+        marginTop:"3rem",
+        textAlign:"center"
     },
     grid: {
         // marginTop: -200,
