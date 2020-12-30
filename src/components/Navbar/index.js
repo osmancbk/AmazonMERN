@@ -1,403 +1,270 @@
-import React, { useState, useContext } from 'react';
-import { styles, DrawerButton, NavLogo, SignIn } from './Navbar.style'
-import { Link, useHistory } from "react-router-dom";
+import React, { useContext } from 'react';
+import { Drawer, Container, Badge, useMediaQuery, Menu, MenuItem } from '@material-ui/core';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import logo from '../../assets/amazonLg.png'//*
-import SearchIcon from '@material-ui/icons/Search';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import { Drawer, IconButton, Container, Grid, TextField, Hidden } from '@material-ui/core';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import ShoppingCartOutlined from '@material-ui/icons/ShoppingCartOutlined';
 import { Context } from '../../router/Router'
-import LinearProgress from '@material-ui/core/LinearProgress';
+import { Link, useHistory } from "react-router-dom";
+import { styles, StyledBadge, DrawerButton, NavLogo, SignIn, SignInRet } from './Navbar.style'
+import logo from '../../assets/amazonLg.png'
+import { SearchBar } from '../SearchBar';
+import { useTheme } from "@material-ui/core/styles";
 
-function Navbar() {
+export default function ButtonAppBar() {
   const classes = styles();
   const history = useHistory();
-  const [open, setOpen] = useState(false)
+  const consumer = useContext(Context)
+  //
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  //
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
 
-  const handleDrawer = () => {
-    setOpen(true)
-  }
+  const handleMenu = event => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  function NavbarRight() {
-    const consumer = useContext(Context);
-    const handleAuthentication = () => {
-      if (consumer?.currentUser) {
-        consumer?.setCurrentUser(null);
-        localStorage.removeItem("token");
-        history.push('/');
-        consumer.setCheckout(null);
-        consumer.setTotal(null);
-      }
-    };
-    //  <LinearProgress style={{ marginTop: 20 }} /> || 
+  const handleMenuClick = pageURL => {
+    history.push(pageURL);
+    setAnchorEl(null);
+    if (pageURL === "/") {
+      consumer.getProducts();
+    }
 
-    return (
-      <>
-        <Grid item xs={5} >
-            <Link style={{ color: 'white' }} to={!consumer?.currentUser && "/login"}>
-              <SignIn onClick={handleAuthentication}>
-                <SignIn > 
-                  {consumer?.currentUser ? consumer?.currentUser?.userEmail :  "Hello Guess"  }
-                </SignIn>
-                <SignIn>
-                 <b>{consumer?.currentUser ? "Sign Out" : "Sign In"}</b>
-                </SignIn>
-              </SignIn>
-            </Link>
-        </Grid>
+  };
 
-        <Grid item xs={4}>
-          <SignIn>Returns</SignIn>
-          <b><SignIn>&Orders</SignIn></b>
-        </Grid>
-        <Grid item xs={3}>
-          <Link onClick={()=>{consumer.getCheckout()}} to="/checkout">
-            <ShoppingCartIcon  style={{ fill: "#FFFFFF" }}/>
-          </Link>
-          <SignIn>{consumer?.checkout?.length}  </SignIn>
-        </Grid>
-      </>
-    );
-  }//{consumer?.checkout?.length}
+  const handleButtonClick = pageURL => {
+    history.push(pageURL);
+  };
 
+  const handleAuthentication = () => {
+    if (consumer?.currentUser) {
+      consumer?.setCurrentUser(null);
+      localStorage.removeItem("token");
+      history.push('/');
+      consumer.setCheckout(null);
+      consumer.setTotal(null);
+    }
+  };
+
+  const menuItems = [
+    {
+      menuTitle: "Home",
+      pageURL: "/"
+    },
+    {
+      menuTitle: "Login",
+      pageURL: "/login"
+    },
+    {
+      menuTitle: "Checkout",
+      pageURL: "/checkout"
+    },
+
+  ];
+// Todo:  Func link
   return (
     <Container maxWidth={'xl'} className={classes.root}>
-      <Grid container spacing={3} >
-
-        <Grid item xs={1} sm={1} md={1} container>
-          <IconButton onClick={handleDrawer}>
-            <MenuIcon fontSize='large' style={{ color: 'white' }} />
+      <AppBar position="static" className={classes.header}>
+        <Toolbar>
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <MenuIcon />
           </IconButton>
-        </Grid>
-        <Hidden xsDown>
-          <Grid item xs={1} sm={2} md={2} container >
-            <Link to="/">
-              <NavLogo src={logo} alt="Logo" />
-            </Link>
-          </Grid>
-        </Hidden>
-        <Grid item xs={5} sm={4} md={6} container >
-          <Grid xs={11}>
-            <TextField
-              id="filled"
-              label="Search"
-              variant="outlined"
-              size="small"
-              fullWidth
-              style={{
-              backgroundColor: 'white',
-              }} />
-          </Grid>
-          <Grid xs={1}>
-            <SearchIcon className={classes.SearchIcon} />
-          </Grid>
-        </Grid>
-        <Grid item xs={5} sm={5} md={3} container spacing={3}>
-          <NavbarRight />
-        </Grid>
-      </Grid>
-      <Drawer
-        anchor='left'
-        open={open}
-        onClose={() => setOpen(false)}
-      >
-        <h3>This is a Drawer ... </h3>
-      </Drawer>
-    </Container>
-  )
+
+          <Link to="/" className={classes.logoAmazon}  onClick={() => consumer.getProducts()}> 
+            <NavLogo src={logo} alt="Logo" />
+          </Link>
+
+          <SearchBar />
+
+          {isMobile ? (
+            <>
+              <IconButton
+                edge="start"
+                className={classes.menuButton}
+                color="inherit"
+                aria-label="menu"
+                onClick={handleMenu}
+              >
+                <AccountBoxIcon style={{ marginLeft: "30", fontSize: "30" }} />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right"
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right"
+                }}
+                open={open}
+                onClose={() => setAnchorEl(null)}
+              >
+
+                {menuItems.map(menuItem => {
+                  const { menuTitle, pageURL } = menuItem;
+                  return (
+                    <MenuItem onClick={() => handleMenuClick(pageURL)}>
+                      {menuTitle}
+                    </MenuItem>
+                  );
+                })}
+              </Menu>
+            </>
+          ) : (
+              <>
+                <Link className={classes.loginStyle} to={!consumer?.currentUser && "/login"}>
+                  <SignIn onClick={handleAuthentication} >
+                    <SignIn>
+                      {consumer?.currentUser ? consumer?.currentUser?.userEmail : "HelloGuess"}
+                    </SignIn>
+
+                    <SignIn>
+                      <b>{consumer?.currentUser ? "Sign Out" : "SignIn"}</b>
+                    </SignIn>
+                  </SignIn>
+                </Link>
+
+                <SignInRet>
+                  <SignInRet>Returns</SignInRet>
+                  <b><SignInRet>&Orders</SignInRet></b>
+                </SignInRet>
+
+
+                <Link onClick={() => { consumer?.getCheckout() }} to="/checkout">
+                  <StyledBadge badgeContent={consumer?.checkout?.length} color="secondary" >
+                    <ShoppingCartOutlined style={{ fill: "#FFFFFF", fontSize: "30" }} />
+                  </StyledBadge>
+                </Link>
+              </>
+
+            )}
+
+        </Toolbar>
+      </AppBar>
+    </Container >
+  );
 }
 
-export default Navbar;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React from 'react';
-// import {makeStyles} from '@material-ui/core/styles';
-// import AppBar from '@material-ui/core/AppBar';
-// import Toolbar from '@material-ui/core/Toolbar';
-// import Typography from '@material-ui/core/Typography';
-// import IconButton from '@material-ui/core/IconButton';
+// import React, { useState, useContext } from 'react';
+// import { styles, DrawerButton, NavLogo, SignIn } from './Navbar.style'
+// import { Link, useHistory } from "react-router-dom";
 // import MenuIcon from '@material-ui/icons/Menu';
-// import AccountCircle from '@material-ui/icons/AccountCircle';
-// // import Switch from '@material-ui/core/Switch';
-// // import FormControlLabel from '@material-ui/core/FormControlLabel';
-// // import FormGroup from '@material-ui/core/FormGroup';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import Menu from '@material-ui/core/Menu';
+// import logo from '../../assets/amazonLg.png'//*
+// import SearchIcon from '@material-ui/icons/Search';
+// import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+// import { Drawer, IconButton, Container, Grid, TextField, Hidden } from '@material-ui/core';
+// import { Context } from '../../router/Router'
+// import { SearchBar } from '../SearchBar'
 
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     flexGrow: 1,
-//   },
-//   menuButton: {
-//     marginRight: theme.spacing(2),
-//   },
-//   title: {
-//     flexGrow: 1,
-//   },
-// }));
+// function Navbar() {
+//   const classes = styles();
+//   const history = useHistory();
+//   const [open, setOpen] = useState(false)
 
-// export default function Navbar() {
-//   const classes = useStyles();
-//   const [auth, setAuth] = React.useState(true);
-//   const [anchorEl, setAnchorEl] = React.useState(null);
-//   const open = Boolean(anchorEl);
+//   const handleDrawer = () => {
+//     setOpen(true)
+//   }
 
-// //   const handleChange = (event) => {
-// //     setAuth(event.target.checked);
-// //   };
+//   function NavbarRight() {
+//     const consumer = useContext(Context);
+//     const handleAuthentication = () => {
+//       if (consumer?.currentUser) {
+//         consumer?.setCurrentUser(null);
+//         localStorage.removeItem("token");
+//         history.push('/');
+//         consumer.setCheckout(null);//
+//         consumer.setTotal(null);//
+//       }
+//     };
+//     //  <LinearProgress style={{ marginTop: 20 }} /> || 
 
-//   const handleMenu = (event) => {
-//     setAnchorEl(event.currentTarget);
-//   };
+//     return (
+//       <>
+//         <Grid item xs={5} >
+//             <Link style={{ color: 'white' }} to={!consumer?.currentUser && "/login"}>
+//               <SignIn onClick={handleAuthentication}>
+//                 <SignIn > 
+//                   {consumer?.currentUser ? consumer?.currentUser?.userEmail :  "Hello Guess"  }
+//                 </SignIn>
+//                 <SignIn>
+//                  <b>{consumer?.currentUser ? "Sign Out" : "Sign In"}</b>
+//                 </SignIn>
+//               </SignIn>
+//             </Link>
+//         </Grid>
 
-//   const handleClose = () => {
-//     setAnchorEl(null);
-//   };
+//         <Grid item xs={4}>
+//           <SignIn>Returns</SignIn>
+//           <b><SignIn>&Orders</SignIn></b>
+//         </Grid>
+//         <Grid item xs={3}>
+//           <Link onClick={()=>{consumer.getCheckout()}} to="/checkout">
+//             <ShoppingCartIcon  style={{ fill: "#FFFFFF" }}/>
+//           </Link>
+//           <SignIn>{consumer?.checkout?.length}  </SignIn>
+//         </Grid>
+//       </>
+//     );
+//   }//{consumer?.checkout?.length}
 
 //   return (
-//     <div className={classes.root}>
-//       {/* <FormGroup>
-//         <FormControlLabel
-//           control={<Switch checked={auth} onChange={handleChange} aria-label="login switch" />}
-//           label={auth ? 'Logout' : 'Login'}
-//         />
-//       </FormGroup> */}
-//       <AppBar position="static">
-//         <Toolbar>
-//           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-//             <MenuIcon />
+//     <Container maxWidth={'xl'} className={classes.root}>
+//       <Grid container spacing={3} >
+
+//         <Grid item xs={1} sm={1} md={1} container>
+//           <IconButton onClick={handleDrawer}>
+//             <MenuIcon fontSize='large' style={{ color: 'white' }} />
 //           </IconButton>
-//           <Typography variant="h6" className={classes.title}>
-//             Deneme
-//           </Typography>
-//           {auth && ( //giriş yapınca gözükecek
-//             <div>
-//               <IconButton
-//                 aria-label="account of current user"
-//                 aria-controls="menu-appbar"
-//                 aria-haspopup="true"
-//                 onClick={handleMenu}
-//                 color="inherit"
-//               >
-//                  Names
-//                 <AccountCircle />
-//               </IconButton>
-//               <Menu
-//                 id="menu-appbar"
-//                 anchorEl={anchorEl}
-//                 anchorOrigin={{
-//                   vertical: 'top',
-//                   horizontal: 'right',
-//                 }}
-//                 keepMounted
-//                 transformOrigin={{
-//                   vertical: 'top',
-//                   horizontal: 'right',
-//                 }}
-//                 open={open}
-//                 onClose={handleClose}
-//               >
-//                 <MenuItem onClick={handleClose}>Profile</MenuItem>
-//                 <MenuItem onClick={handleClose}>My account</MenuItem>
-//               </Menu>
-//             </div>
-//           )}
-//         </Toolbar>
-//       </AppBar>
-//     </div>
-//   );
+//         </Grid>
+//         <Hidden xsDown>
+//           <Grid item xs={1} sm={2} md={2} container >
+//             <Link to="/">
+//               <NavLogo src={logo} alt="Logo" />
+//             </Link>
+//           </Grid>
+//         </Hidden>
+//         <Grid item xs={5} sm={4} md={6} container >
+//         <SearchBar />
+//           {/* <Grid xs={11}>
+//             <TextField
+//               id="filled"
+//               label="Search"
+//               variant="outlined"
+//               size="small"
+//               fullWidth
+//               style={{
+//               backgroundColor: 'white',
+//               }} />
+//           </Grid>
+
+//           <Grid xs={1}>
+//             <SearchIcon className={classes.SearchIcon} />
+//           </Grid> */}
+
+//         </Grid>
+//         <Grid item xs={5} sm={5} md={3} container spacing={3}>
+//           <NavbarRight />//*
+//         </Grid>
+//       </Grid>
+//       <Drawer
+//         anchor='left'
+//         open={open}
+//         onClose={() => setOpen(false)}
+//       >
+//         <h3>This is a Drawer ... </h3>
+//       </Drawer>
+//     </Container>
+//   )
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React from "react";
-// import "./Navbar.css";
-// import SearchIcon from "@material-ui/icons/Search";
-// import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
-// import { Link } from "react-router-dom";
-// import { useStateValue } from "../context/StateProvider";
-// // import { auth } from "./firebase";
-// import { Drawer } from "@material-ui/core";
-// // import Checkout from "./Checkout";
-
-// function Header() {
-//   const [{ basket, user, drawer }, dispatch] = useStateValue();
-
-//   const handleAuthentication = () => {
-//     // if (user) {
-//     //   auth.signOut();
-//     // }
-//   };
-
-//   return (
-//     <div className="header">
-//       <Link to="/">
-//         <img
-//           src="https://pngimg.com/uploads/amazon/amazon_PNG11.png"
-//           className="header__logo"
-//         />
-//       </Link>
-//       <div className="header__search">
-//         <input className="header__searchInput" type="text" />
-//         <SearchIcon className="header__searchIcon" />
-//       </div>
-//       <div className="header__nav">
-//         <Link to={!user && "/login"}>
-//           <div className="header__option" onClick={handleAuthentication}>
-//             <span className="header__optionLineOne">
-//               {user ? user.email : "Hello Guest"}
-//             </span>
-//             <span className="header__optionLineTwo">
-//               {user ? "Sign Out" : "Sign In"}
-//             </span>
-//           </div>
-//         </Link>
-//         <div className="header__option">
-//           <span className="header__optionLineOne">Returns</span>
-//           <span className="header__optionLineTwo">& Orders</span>
-//         </div>
-//         <div className="header__option">
-//           <span className="header__optionLineOne">Your</span>
-//           <span className="header__optionLineTwo">Prime</span>
-//         </div>
-//         <Link
-//           onClick={() => {
-//             dispatch({
-//               type: "SET_DRAWER",
-//               toggle: true,
-//             });
-//           }}
-//         >
-//           <div className="header__optionBasket">
-//             <ShoppingBasketIcon />
-//             <span
-//               className="header__basketCount header__optionLineTwo"
-//               style={{ marginLeft: "5px" }}
-//             >
-//               {basket?.length}
-//             </span>
-//           </div>
-//         </Link>
-//         <Drawer open={drawer} style={{ width: "50%" }}>
-//           {/* <Checkout /> */}
-//         </Drawer>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default Header;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// export default Navbar;

@@ -17,6 +17,9 @@ export default function SliderTop() {
     var settings = {
         infinite: true,
         slidesToShow: 1,
+        autoplay: true,
+        speed: 4000,
+        // autoplaySpeed: 2000,
     //  arrows: true,
     //  nextArrow: <SampleNextArrow />,
     //   prevArrow: <SamplePrevArrow />

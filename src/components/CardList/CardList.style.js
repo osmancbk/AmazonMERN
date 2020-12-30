@@ -52,7 +52,6 @@ export const styles = makeStyles((theme) => ({
 
 //------Styled Comp------//
 export const Box = styled.div`
-      font-variant: small-caps;
       font-weight: bold;
       position: relative;
       margin-bottom: 7px;
