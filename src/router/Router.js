@@ -11,6 +11,8 @@ import Checkout from "../pages/checkout";
 import { fetchData, privateFetchData } from '../helper/FetchData';
 import { postData } from '../helper/postData';
 
+let originalList = [];
+
 export const Context = createContext();
 
 function AppRouter() {
@@ -23,6 +25,25 @@ function AppRouter() {
     const [total, setTotal] = useState()
     const [deleted, setDeleted] = useState()
     const [currentUser, setCurrentUser] = useState()
+    const [productList, setProductList] = useState()
+
+    const getProducts = () => {
+        fetchData('/api/product/homepage')
+            .then(res => {
+                    setProductList(res?.data?.products)
+                    originalList = [...res?.data?.products]
+            })
+            .catch(err => console.log(err))
+    }
+
+    const onProductSearch = (text) => {
+        const filteredList = originalList.filter(item => {           
+            const userText = text.toUpperCase();
+            const productName = item.title.toUpperCase();
+            return productName.indexOf(userText) > -1;
+        })
+        setProductList(filteredList);
+    }
 
     const getCheckout=()=>{
         console.log('chekout', checkout?.length)
@@ -86,6 +107,7 @@ function AppRouter() {
         .then(res => setCurrentUser(res))
         .catch(err=> console.log('err', err))
         // console.log('currentUser', currentUser)
+        getProducts();
 
     }, [])
     
@@ -94,7 +116,7 @@ function AppRouter() {
             productData, setProductData, similarProductsData, setsimilarProductsData,
             addToBasket, getDetails, currentProductId, setCurrentProductId, snackBarOpen, setSnackBarOpen, snackBarHandleClick,
             snackBarHandleClose, snackBarMessage, setsnackBarMessage, deleted, setDeleted, total, setTotal, checkout, setCheckout, 
-            currentUser, setCurrentUser,getCheckout
+            currentUser, setCurrentUser,getCheckout, productList, onProductSearch, getProducts
         }}>
             <Router>
                 <Navbar />
